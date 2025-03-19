@@ -48,7 +48,8 @@ void processFields(const clang::CXXRecordDecl *record, llvm::raw_ostream &out) {
   }
 }
 
-void processMethods(const clang::CXXRecordDecl *record, llvm::raw_ostream &out) {
+void processMethods(const clang::CXXRecordDecl *record,
+                    llvm::raw_ostream &out) {
   if (std::none_of(record->method_begin(), record->method_end(),
                    [](const clang::CXXMethodDecl *method) {
                      return !method->isImplicit();
@@ -103,20 +104,18 @@ public:
       // is class or whatever
       out << record->getNameAsString();
       if (record->getDescribedClassTemplate()) {
-        out << "(" << (record->isStruct() ? "struct" : "class")
-            << "|template)";
+        out << "(" << (record->isStruct() ? "struct" : "class") << "|template)";
       } else {
         out << "(" << (record->isStruct() ? "struct" : "class") << ")";
       }
 
       if (record->getNumBases()) {
         out << " -> ";
-        llvm::interleaveComma(record->bases(), out,
-                              [&](const clang::CXXBaseSpecifier &base) {
-                                out
-                                    << getAccessSpecifierString(base.getAccessSpecifier())
-                                    << " " << base.getType().getAsString();
-                              });
+        llvm::interleaveComma(
+            record->bases(), out, [&](const clang::CXXBaseSpecifier &base) {
+              out << getAccessSpecifierString(base.getAccessSpecifier()) << " "
+                  << base.getType().getAsString();
+            });
       }
       out << "\n";
     }
