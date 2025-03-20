@@ -19,12 +19,16 @@ struct Human {
 // CHECK-NEXT: |_Methods
 // CHECK-NEXT: | |_ sleep (void()|public|override)
 // CHECK-NEXT: | |_ eat (void()|public|override)
-// CHECK-NEXT: | |_ work (void()|public)
+// CHECK-NEXT: | |_ work (double()|public)
+// CHECK-NEXT: | |_ type_float (float()|public)
+// CHECK-NEXT: | |_ type_char (char()|public)
 struct Engineer : Human {
   unsigned salary;
   void sleep() override { /* something */ }
   void eat() override { /* something */ }
-  void work() { /* something */ }
+  double work() { /* something */ }
+  float type_float() { }
+  char type_char() { }
 };
 
 // CHECK: BaseClass(class)
@@ -40,3 +44,24 @@ class BaseClass {};
 // CHECK-NEXT: |_Methods
 // CHECK-NEXT: | |_ (has no methods)
 class NaslClass : public BaseClass {};
+
+// CHECK: TempClass(class|template)
+// CHECK-NEXT: |_Fields
+// CHECK-NEXT: | |_ type_t (T|private)
+// CHECK-NEXT: |_Methods
+// CHECK-NEXT: | |_ (has no methods)
+
+template <class T> class TempClass {
+  T type_t;
+};
+
+// CHECK: UnionCheck(union)
+// CHECK-NEXT: |_Fields
+// CHECK-NEXT: | |_ foo (int|public)
+// CHECK-NEXT: | |_ boo (char|public)
+// CHECK-NEXT: |_Methods
+// CHECK-NEXT: | |_ (has no methods)
+union UnionCheck {
+  int foo;
+  char boo;
+};
