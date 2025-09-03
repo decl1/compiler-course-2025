@@ -90,7 +90,8 @@ void processMethods(const clang::CXXRecordDecl *record,
   }
 }
 
-void processNested(const clang::CXXRecordDecl *record, llvm::raw_ostream &output) {
+void processNested(const clang::CXXRecordDecl *record,
+                   llvm::raw_ostream &output) {
   bool has_nested_types = false;
 
   for (const auto *decl : record->decls()) {
