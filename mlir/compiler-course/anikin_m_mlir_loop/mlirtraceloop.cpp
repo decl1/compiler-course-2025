@@ -7,7 +7,7 @@
 #include "mlir/Tools/Plugins/PassPlugin.h"
 #include "llvm/ADT/TypeSwitch.h"
 
-namespace mlir {
+using namespace mlir;
 
 namespace {
 class LoopTracingPass : public PassWrapper<LoopTracingPass, OperationPass<ModuleOp>> {
@@ -27,9 +27,6 @@ private:
   }
 
   void handleForLikeLoop(Operation* forOp, OpBuilder& rewriter) {
-    auto loopInterface = dyn_cast<LoopLikeOpInterface>(forOp);
-    if (!loopInterface) return;
-
     if (auto affineFor = dyn_cast<affine::AffineForOp>(forOp)) {
       instrumentLoopBody(affineFor, affineFor.getBody(), ValueRange{affineFor.getInductionVar()}, rewriter);
     } else if (auto scfFor = dyn_cast<scf::ForOp>(forOp)) {
@@ -88,21 +85,19 @@ public:
 
 } // namespace
 
-MLIR_DECLARE_EXPLICIT_TYPE_ID(LoopTracingPass)
-MLIR_DEFINE_EXPLICIT_TYPE_ID(LoopTracingPass)
+MLIR_DECLARE_EXPLICIT_TYPE_ID(::LoopTracingPass)
+MLIR_DEFINE_EXPLICIT_TYPE_ID(::LoopTracingPass)
 
-mlir::PassPluginLibraryInfo getLoopTracingPluginInfo() {
+PassPluginLibraryInfo getLoopTracingPluginInfo() {
   return {
       MLIR_PLUGIN_API_VERSION,
       "mlirtraceloop_Anikin_Maksim_FIIT2_MLIR",
       LLVM_VERSION_STRING,
-      []() { mlir::PassRegistration<LoopTracingPass>(); }
+      []() { PassRegistration<LoopTracingPass>(); }
   };
 }
 
-extern "C" LLVM_ATTRIBUTE_WEAK mlir::PassPluginLibraryInfo
+extern "C" LLVM_ATTRIBUTE_WEAK PassPluginLibraryInfo
 mlirGetPassPluginInfo() {
   return getLoopTracingPluginInfo();
 }
-
-} // namespace mlir
